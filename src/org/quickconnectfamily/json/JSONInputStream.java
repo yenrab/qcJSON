@@ -75,18 +75,7 @@ public class JSONInputStream extends JSONStream{
 		InputStreamReader inReader = new InputStreamReader(theByteStream);
 		aParser = new JSONParser(inReader);
 	}
-/**
- * 
- * @param theByteStream - the stream from which the JSON is to be read.
- * @param aCipher - a Cipher used to decrypt the information being read from the stream.
- */
-	public JSONInputStream(InputStream theByteStream, Cipher aCipher){
-		if(theByteStream == null || aCipher == null){
-			throw new NullPointerException();
-		}
-		InputStreamReader inReader = new InputStreamReader(new CipherInputStream(theByteStream, aCipher));
-		aParser = new JSONParser(inReader);
-	}
+
 
 	/**
 	 * Reads a HashMap or ArrayList from the underlying stream

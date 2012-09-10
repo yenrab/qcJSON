@@ -100,19 +100,7 @@ public class JSONOutputStream extends JSONStream{
 			isAndroid = true;
 		}
 	}
-	/**
-	 * 
-	 * @param aStream - the stream to which the JSON is to be written
-	 * @param aCipher - a Cipher to be used to encrypt the JSON sent to the stream
-	 */
-	public JSONOutputStream(OutputStream aStream, Cipher aCipher){
-		if(aStream == null || aCipher == null){
-			throw new NullPointerException();
-		}
-		theWriter = new PrintWriter(new CipherOutputStream(aStream, aCipher));
-		levelCountLimit = 30;
-	}
-
+	
 	/**
 	 * Writes a Serializable Object to the underlying stream as a JSON string
 	 * @param aSerializableObject - any Serializable object other than a raw Java Object and anything that inherits from java.awt.container
