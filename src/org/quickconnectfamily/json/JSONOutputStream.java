@@ -89,7 +89,7 @@ public class JSONOutputStream extends JSONStream{
 		}
 		theWriter = new PrintWriter(aStream);
 		levelCountLimit = 30;
-		//hack work around.  See mesage regarding isAndroid above.
+		//hack work around.  See message regarding isAndroid above.
 		try{
 			Object aContainer = Class.forName("java.awt.Container");
 			if(aContainer == null){
@@ -205,24 +205,27 @@ public class JSONOutputStream extends JSONStream{
 			theWriter.append("\""+((String)aSerializableObject)+"\"");
 		}
 		else if(aSerializableObject instanceof Number){
+			theWriter.append(aSerializableObject.toString());
+			/*
 			if(aSerializableObject instanceof Integer){
-				theWriter.append("\""+((Integer)aSerializableObject).intValue()+"\"");
+				theWriter.append(((Integer)aSerializableObject).toString());
 			}
 			else if(aSerializableObject instanceof Long){
-				theWriter.append("\""+((Long)aSerializableObject).longValue()+"\"");
+				theWriter.append(((Long)aSerializableObject).toString());
 			}
 			else if(aSerializableObject instanceof Short){
-				theWriter.append("\""+((Integer)aSerializableObject).shortValue()+"\"");
+				theWriter.append(((Integer)aSerializableObject).toString());
 			}
 			else if(aSerializableObject instanceof Double){
-				theWriter.append("\""+((Double)aSerializableObject).doubleValue()+"\"");
+				theWriter.append(((Double)aSerializableObject).toString());
 			}
 			else if(aSerializableObject instanceof Float){
-				theWriter.append("\""+((Float)aSerializableObject).shortValue()+"\"");
+				theWriter.append(((Float)aSerializableObject).shortValue()+"\"");
 			}
 			else{
 				theWriter.append("\""+aSerializableObject.toString()+"\"");
 			}
+			*/
 		}
 		//object arrays
 		else if(aSerializableObject instanceof Object[]){

@@ -60,23 +60,13 @@ public class JSONUtilities {
 	 */
 	public static String stringify(Serializable aSerializableObject) throws JSONException{
 		
-		return new String(stringifySecure(aSerializableObject));
-	}
-	/**
-	 * Converts a Serializable object into a JSON formatted byte[]. This avoids the Java String security issue.
-	 * @param aSerializableObject - the object to be JSONed.  This can be any Serializable Object except 
-	 * a raw Object or anything that inherits from java.awt.container.
-	 * @return a JSON formatted String or if null is passed in null is returned.
-	 * @throws JSONException
-	 */
-	public static byte[] stringifySecure(Serializable aSerializableObject) throws JSONException{
 		if(aSerializableObject == null){
 			return null;
 		}
 		ByteArrayOutputStream theByteStream = new ByteArrayOutputStream();
 		JSONOutputStream theStream = new JSONOutputStream(theByteStream);
 		theStream.writeObject(aSerializableObject);
-		return theByteStream.toByteArray();
+		return new String(theByteStream.toByteArray());
 	}
 	
 	/**
@@ -118,11 +108,7 @@ public class JSONUtilities {
 			return null;
 		}
 		byte[] byteArray = aJSONString.getBytes();
-		return parseSecure(byteArray);
-	}
-	
-	public static Object parseSecure(byte[] JSONbytes) throws JSONException{
-		ByteArrayInputStream theByteStream = new ByteArrayInputStream(JSONbytes);
+		ByteArrayInputStream theByteStream = new ByteArrayInputStream(byteArray);
 		JSONInputStream theStream = new JSONInputStream(theByteStream);
 		return theStream.readObject();
 	}
@@ -152,6 +138,8 @@ public class JSONUtilities {
 		catch (UnsupportedEncodingException e) {
 			throw new JSONException("Unsupported encoding: "+theEncoding);
 		}
-		return parseSecure(byteArray);
+		ByteArrayInputStream theByteStream = new ByteArrayInputStream(byteArray);
+		JSONInputStream theStream = new JSONInputStream(theByteStream);
+		return theStream.readObject();
 	}
 }
