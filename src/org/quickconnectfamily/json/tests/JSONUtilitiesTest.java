@@ -14,15 +14,16 @@ import java.util.HashMap;
 
 //import javax.swing.JButton;
 
+import org.quickconnectfamily.json.JSONException;
 import org.quickconnectfamily.json.JSONUtilities;
 
 public class JSONUtilitiesTest {
-
+    
 	/*
-	 * Since the stringify method is a facade for the underlying JSONOutputStream writeObject method it only 
+	 * Since the stringify method is a facade for the underlying JSONOutputStream writeObject method it only
 	 * needs to be tested to verify the facade is working correctly.
 	 */
-
+    
 	public static void testStringifySerializable() {
 		
 		/*
@@ -49,8 +50,8 @@ public class JSONUtilitiesTest {
 		 */
 		TestObject anObject = new TestObject("Hello there.", 7, new Date(1067899));
 		try {
-			 jsonString = JSONUtilities.stringify(anObject);
-			 assert jsonString.equals("{\"theDate\":\"Wed Dec 31 17:17:47 MST 1969\",\"theString\":\"Hello there.\",\"theInt\":7}");
+            jsonString = JSONUtilities.stringify(anObject);
+            assert jsonString.equals("{\"theDate\":\"Wed Dec 31 17:17:47 MST 1969\",\"theString\":\"Hello there.\",\"theInt\":7}");
 			//System.out.println("happy path object: "+jsonString);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -73,8 +74,8 @@ public class JSONUtilitiesTest {
 		 */
 		TestObject anObjectWithNull = new TestObject(null, 7, new Date(1067899));
 		try {
-			 jsonString = JSONUtilities.stringify(anObjectWithNull);
-			 assert jsonString.equals("{\"theDate\":\"Wed Dec 31 17:17:47 MST 1969\",\"theInt\":7}");
+            jsonString = JSONUtilities.stringify(anObjectWithNull);
+            assert jsonString.equals("{\"theDate\":\"Wed Dec 31 17:17:47 MST 1969\",\"theInt\":7}");
 			//System.out.println("null attribute: "+jsonString);
 			
 		} catch (Exception e) {
@@ -83,7 +84,7 @@ public class JSONUtilitiesTest {
 		}
 		
 		/*
-		 * Testing an array of Objects. 
+		 * Testing an array of Objects.
 		 */
 		
 		try {
@@ -97,7 +98,7 @@ public class JSONUtilitiesTest {
 		}
 		
 		/*
-		 * Testing an array of ints.  
+		 * Testing an array of ints.
 		 */
 		
 		try {
@@ -111,7 +112,7 @@ public class JSONUtilitiesTest {
 		}
 		
 		/*
-		 * Testing an array of ints.  
+		 * Testing an array of ints.
 		 */
 		
 		try {
@@ -124,7 +125,7 @@ public class JSONUtilitiesTest {
 			return;
 		}
 		/*
-		 * Testing an array of bytes.  
+		 * Testing an array of bytes.
 		 */
 		
 		try {
@@ -133,7 +134,7 @@ public class JSONUtilitiesTest {
 			assert jsonString != null;
 			assert jsonString.equals("[\"84\",\"104\",\"105\",\"115\",\"32\",\"105\",\"115\",\"32\",\"97\",\"110\",\"32\",\"97\",\"114\",\"114\",\"97\",\"121\",\"32\",\"111\",\"102\",\"32\",\"98\",\"121\",\"116\",\"101\",\"115\"]");
 			//System.out.println("byte[]: "+jsonString);
-		} 	
+		}
 		catch (Exception e) {
 			e.printStackTrace();
 			return;
@@ -157,7 +158,7 @@ public class JSONUtilitiesTest {
 		}
 		System.out.println("Passed testStringifyCollections");
 	}
-
+    
 	
 	public static void testStringifySerializableEncoding() {
 		/*
@@ -168,7 +169,7 @@ public class JSONUtilitiesTest {
 			String jsonString = JSONUtilities.stringify(anObject, JSONUtilities.encoding.UNICODE);
 			assert jsonString.equals("{\"theString\":\"Hello there.\",\"theInt\":\"7\",\"theDate\":\"Wed Dec 31 17:17:47 MST 1969\"}");
 			//System.out.println("happy path object unicode: "+jsonString);
-		} 
+		}
 		catch (Exception e) {
 			e.printStackTrace();
 			return;
@@ -177,7 +178,7 @@ public class JSONUtilitiesTest {
 			String jsonString = JSONUtilities.stringify(anObject, JSONUtilities.encoding.UTF8);
 			assert jsonString.equals("{\"theString\":\"Hello there.\",\"theInt\":\"7\",\"theDate\":\"Wed Dec 31 17:17:47 MST 1969\"}");
 			//System.out.println("happy path object UTF8: "+jsonString);
-		} 
+		}
 		catch (Exception e) {
 			e.printStackTrace();
 			//fail("Should not have thrown exception");
@@ -193,7 +194,7 @@ public class JSONUtilitiesTest {
 			e.printStackTrace();
 			//fail("Should not have thrown exception");
 		}
-
+        
 		/*
 		 * Testing a null encoding or other invalid encoding
 		 */
@@ -225,7 +226,7 @@ public class JSONUtilitiesTest {
 			e.printStackTrace();
 			return;
 		}
-
+        
 		char[] someChars = {'a','b','c'};
 		Object[] annotherObjectArray = {new Integer(4), "Hello", someChars};
 		try {
@@ -280,7 +281,7 @@ public class JSONUtilitiesTest {
 			aNumber = (Double)anObjectRepresentation.get("doubleObjAtt");
 			assert aNumber != null;
 			assert aNumber.doubleValue() == 1000.567789;
-				
+            
 			ArrayList aList = (ArrayList)anObjectRepresentation.get("listAtt");
 			assert aList != null;
 			//check the values of the items in the list
@@ -331,7 +332,7 @@ public class JSONUtilitiesTest {
 		System.out.println("Passed testParseString");
 		
 	}
-
+    
 	
 	public static void testParseStringEncoding() {
 		try{
@@ -353,87 +354,87 @@ public class JSONUtilitiesTest {
 			assert aString.equals("some other stuff");
 			
 			HashMap anObjectRepresentation = (HashMap)testMap.get("aTester");
-				//check the attributes of the object embedded as an attribute of the outer object
-				aString = (String)anObjectRepresentation.get("stringAtt");
-				assert aString != null;
-				assert aString.equals("hello");
-				
-				aNumber = (Number)anObjectRepresentation.get("doubleAtt");
-				assert aNumber != null;
-				assert aNumber.doubleValue() == -4.5;
-				
-				aNumber = (Number)anObjectRepresentation.get("doubleObjAtt");
-				assert aNumber != null;
-				assert aNumber.doubleValue() == 1000.567789;
-				
-				ArrayList aList = (ArrayList)anObjectRepresentation.get("listAtt");
-				assert aList != null;
-				assert aList.size() == 2;
-
-				//check the values of the items in the list
-					aNumber = (Number)aList.get(0);
-					assert aNumber !=null;
-					assert aNumber.intValue() == 7;
-					
-					aString = (String)aList.get(1);
-					assert aString != null;
-					assert aString.equals("hello there from list");
-				
-				//Check the last attribute of the object embedded as an attribute of the outer object
-				aString = (String)anObjectRepresentation.get("parentString");
-				assert aString != null;
-				assert aString.equals("In The Paraent");
-				
-				/*
-				 * UTF-8
-				 */
-				//test the happy path with a well formed JSON string.
-				testMap = (HashMap)JSONUtilities.parse("{\"aNumber\":16.5,\"stringOne\":\"Some sort of string\",\"20\":\"some other stuff\",\"aTester\":{\"stringAtt\":\"hello\",\"doubleAtt\":-4.5,\"doubleObjAtt\":1000.567789,\"listAtt\":[7,\"hello there from list\"],\"parentString\":\"In The Parent\"}}",JSONUtilities.encoding.UTF8);
-				assert testMap != null;
-				
-				aNumber = (Number)testMap.get("aNumber");
-				assert aNumber != null;
-				assert aNumber.doubleValue() == 16.5;
-				
-				aString = (String)testMap.get("stringOne");
-				assert aString != null;
-				assert aString.equals("Some sort of string");
-				
-				aString = (String)testMap.get("20");
-				assert aString != null;
-				assert aString.equals("some other stuff");
-				
-				anObjectRepresentation = (HashMap)testMap.get("aTester");
-				assert anObjectRepresentation != null;
-				//check the attributes of the object embedded as an attribute of the outer object
-				aString = (String)anObjectRepresentation.get("stringAtt");
-				assert aString != null;
-				assert aString.equals("hello");
-				
-				aNumber = (Number)anObjectRepresentation.get("doubleAtt");
-				assert aNumber != null;
-				assert aNumber.doubleValue() == -4.5;
-				
-				aNumber = (Number)anObjectRepresentation.get("doubleObjAtt");
-				assert aNumber != null;
-				assert aNumber.doubleValue() == 1000.567798;
-				
-				aList = (ArrayList)anObjectRepresentation.get("listAtt");
-				assert aList != null;
-				assert aList.size() == 2;
-				//check the values of the items in the list
-				aNumber = (Number)aList.get(0);
-				assert aNumber != null;
-				assert aNumber.intValue() == 7;
-				
-				aString = (String)aList.get(1);
-				assert aString != null;
-				assert aString.equals("hello there from list");
-					
-				//Check the last attribute of the object embedded as an attribute of the outer object
-				aString = (String)anObjectRepresentation.get("parentString");
-				assert aString != null;
-				assert aString.equals("In The Parent");
+            //check the attributes of the object embedded as an attribute of the outer object
+            aString = (String)anObjectRepresentation.get("stringAtt");
+            assert aString != null;
+            assert aString.equals("hello");
+            
+            aNumber = (Number)anObjectRepresentation.get("doubleAtt");
+            assert aNumber != null;
+            assert aNumber.doubleValue() == -4.5;
+            
+            aNumber = (Number)anObjectRepresentation.get("doubleObjAtt");
+            assert aNumber != null;
+            assert aNumber.doubleValue() == 1000.567789;
+            
+            ArrayList aList = (ArrayList)anObjectRepresentation.get("listAtt");
+            assert aList != null;
+            assert aList.size() == 2;
+            
+            //check the values of the items in the list
+            aNumber = (Number)aList.get(0);
+            assert aNumber !=null;
+            assert aNumber.intValue() == 7;
+            
+            aString = (String)aList.get(1);
+            assert aString != null;
+            assert aString.equals("hello there from list");
+            
+            //Check the last attribute of the object embedded as an attribute of the outer object
+            aString = (String)anObjectRepresentation.get("parentString");
+            assert aString != null;
+            assert aString.equals("In The Paraent");
+            
+            /*
+             * UTF-8
+             */
+            //test the happy path with a well formed JSON string.
+            testMap = (HashMap)JSONUtilities.parse("{\"aNumber\":16.5,\"stringOne\":\"Some sort of string\",\"20\":\"some other stuff\",\"aTester\":{\"stringAtt\":\"hello\",\"doubleAtt\":-4.5,\"doubleObjAtt\":1000.567789,\"listAtt\":[7,\"hello there from list\"],\"parentString\":\"In The Parent\"}}",JSONUtilities.encoding.UTF8);
+            assert testMap != null;
+            
+            aNumber = (Number)testMap.get("aNumber");
+            assert aNumber != null;
+            assert aNumber.doubleValue() == 16.5;
+            
+            aString = (String)testMap.get("stringOne");
+            assert aString != null;
+            assert aString.equals("Some sort of string");
+            
+            aString = (String)testMap.get("20");
+            assert aString != null;
+            assert aString.equals("some other stuff");
+            
+            anObjectRepresentation = (HashMap)testMap.get("aTester");
+            assert anObjectRepresentation != null;
+            //check the attributes of the object embedded as an attribute of the outer object
+            aString = (String)anObjectRepresentation.get("stringAtt");
+            assert aString != null;
+            assert aString.equals("hello");
+            
+            aNumber = (Number)anObjectRepresentation.get("doubleAtt");
+            assert aNumber != null;
+            assert aNumber.doubleValue() == -4.5;
+            
+            aNumber = (Number)anObjectRepresentation.get("doubleObjAtt");
+            assert aNumber != null;
+            assert aNumber.doubleValue() == 1000.567798;
+            
+            aList = (ArrayList)anObjectRepresentation.get("listAtt");
+            assert aList != null;
+            assert aList.size() == 2;
+            //check the values of the items in the list
+            aNumber = (Number)aList.get(0);
+            assert aNumber != null;
+            assert aNumber.intValue() == 7;
+            
+            aString = (String)aList.get(1);
+            assert aString != null;
+            assert aString.equals("hello there from list");
+            
+            //Check the last attribute of the object embedded as an attribute of the outer object
+            aString = (String)anObjectRepresentation.get("parentString");
+            assert aString != null;
+            assert aString.equals("In The Parent");
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -444,17 +445,17 @@ public class JSONUtilitiesTest {
 		 * Testing passing a null string parameter.
 		 */
 		try {
-
+            
 			/*
 			 * UNICODE
 			 */
 			Object nullObject = JSONUtilities.parse(null, JSONUtilities.encoding.UNICODE);
 			//assertNull(nullObject);
-
+            
 			/*
 			 * UTF-8
 			 */
-
+            
 			nullObject = JSONUtilities.parse(null, JSONUtilities.encoding.UTF8);
 			//assertNull(nullObject);
 		} catch (Exception e) {
@@ -479,7 +480,7 @@ public class JSONUtilitiesTest {
 			 */
 			Object someObject = JSONUtilities.parse("{\"key\": \"anotherKey\":\"a value\"}", JSONUtilities.encoding.UTF8);
 			assert false;
-		} 
+		}
 		catch (Exception e) {
 		}
 		
@@ -506,5 +507,38 @@ public class JSONUtilitiesTest {
 		
 		System.out.println("Passed testParseStringEncoding");
 	}
-
+	
+	public static void testStringifyParse(){
+		Date testDate = new Date(1067899);
+		TestObject anObject = new TestObject("Hello there.", 7, testDate);
+		try {
+			String jsonString = JSONUtilities.stringify(anObject);
+			assert jsonString != null;
+			HashMap parsedMap = (HashMap)JSONUtilities.parse(jsonString);
+			assert parsedMap != null;
+			assert ((String)parsedMap.get("theString")).equals("Hello there.");
+			assert ((Integer)parsedMap.get("theInt")).intValue() == 7;
+			assert ((Date)parsedMap.get("theDate")).compareTo(testDate) == 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+		System.out.println("Passed testStringifyParse");
+	}
+	
+	public static void testParseStringify(){
+		try{
+			HashMap testMap = (HashMap)JSONUtilities.parse("{\"aNumber\":16.5,\"stringOne\":\"Some sort of string\",\"20\":\"some other stuff\",\"aTester\":{\"stringAtt\":\"hello\",\"doubleAtt\":-4.5,\"doubleObjAtt\":1000.567789,\"listAtt\":[7,\"hello there from list\"],\"parentString\":\"In The Parent\"}}");
+			assert testMap != null;
+			String jsonString = JSONUtilities.stringify(testMap);
+			assert jsonString != null;
+			assert jsonString.equals("{\"aNumber\":16.5,\"stringOne\":\"Some sort of string\",\"20\":\"some other stuff\",\"aTester\":{\"stringAtt\":\"hello\",\"doubleAtt\":-4.5,\"doubleObjAtt\":1000.567789,\"listAtt\":[7,\"hello there from list\"],\"parentString\":\"In The Parent\"}}");
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return;
+		}
+		System.out.println("Passed testParseStringify");
+	}
+    
 }
