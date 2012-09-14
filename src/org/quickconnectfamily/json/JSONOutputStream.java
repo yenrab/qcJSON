@@ -162,7 +162,7 @@ public class JSONOutputStream extends JSONStream{
 			theWriter.write("\""+((Boolean)aSerializableObject).toString());
 		}
 
-		if(aSerializableObject instanceof Date){
+		else if(aSerializableObject instanceof Date){
 			theWriter.write("\""+((Date)aSerializableObject).toString()+"\"");
 		}
 		else if(aSerializableObject instanceof Map){
