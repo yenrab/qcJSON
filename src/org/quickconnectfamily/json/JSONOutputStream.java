@@ -237,7 +237,7 @@ public class JSONOutputStream extends JSONStream{
 					continue;
 				}
 				writeObject(((Serializable)anObject), levelCount);
-				if(i < theArray.length -2){
+				if(i < theArray.length - 1){
 					theWriter.append(',');
 				}
 			}
