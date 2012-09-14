@@ -251,7 +251,7 @@ public class JSONOutputStream extends JSONStream{
 				int[] theArray = (int[])aSerializableObject;
 				for(int i = 0; i < theArray.length; i++){
 					int aValue = theArray[i];
-					theWriter.append("\""+aValue+"\"");
+					theWriter.append(Integer.toString(aValue));
 					if(i < theArray.length - 1){
 						theWriter.append(',');
 					}
@@ -263,7 +263,7 @@ public class JSONOutputStream extends JSONStream{
 				short[] theArray = (short[])aSerializableObject;
 				for(int i = 0; i < theArray.length; i++){
 					short aValue = theArray[i];
-					theWriter.append("\""+aValue+"\"");
+					theWriter.append(Short.toString(aValue));
 					if(i < theArray.length - 1){
 						theWriter.append(',');
 					}
@@ -275,7 +275,7 @@ public class JSONOutputStream extends JSONStream{
 				long[] theArray = (long[])aSerializableObject;
 				for(int i = 0; i < theArray.length; i++){
 					long aValue = theArray[i];
-					theWriter.append("\""+aValue+"\"");
+					theWriter.append(Long.toString(aValue));
 					if(i < theArray.length - 1){
 						theWriter.append(',');
 					}
@@ -288,7 +288,7 @@ public class JSONOutputStream extends JSONStream{
 				double[] theArray = (double[])aSerializableObject;
 				for(int i = 0; i < theArray.length; i++){
 					double aValue = theArray[i];
-					theWriter.append("\""+aValue+"\"");
+					theWriter.append(Double.toString(aValue));
 					if(i < theArray.length - 1){
 						theWriter.append(',');
 					}
@@ -300,7 +300,7 @@ public class JSONOutputStream extends JSONStream{
 				float[] theArray = (float[])aSerializableObject;
 				for(int i = 0; i < theArray.length; i++){
 					float aValue = theArray[i];
-					theWriter.append("\""+aValue+"\"");
+					theWriter.append(Float.toString(aValue));
 					if(i < theArray.length - 1){
 						theWriter.append(',');
 					}
