@@ -159,7 +159,7 @@ public class JSONOutputStream extends JSONStream{
 		}
 
 		if(aSerializableObject instanceof Boolean){
-			theWriter.write("\""+((Boolean)aSerializableObject).toString());
+			theWriter.write(((Boolean)aSerializableObject).toString());
 		}
 
 		else if(aSerializableObject instanceof Date){
