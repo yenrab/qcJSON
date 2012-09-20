@@ -1,4 +1,4 @@
-package org.quickconnectfamily.json.tests;
+package com.org.quickconnectfamily.qc_json_example;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -22,8 +22,7 @@ public class TestObject implements Serializable {
 		this.theString = (String)aMapRepresentation.get("theString");
 		//dates are stored as timestamp strings.
 		String stampString = (String)aMapRepresentation.get("theDate");
-		Timestamp aStamp = Timestamp.valueOf(stampString);
-		this.theDate = aStamp;
+		this.theDate = new Date(Timestamp.valueOf(stampString).getTime());
 		//numbers are stored as longs or doubles.
 		Long asLong = (Long)aMapRepresentation.get("theInt");
 		this.theInt = asLong.intValue();
@@ -31,7 +30,7 @@ public class TestObject implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object obj) { 
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -42,8 +41,10 @@ public class TestObject implements Serializable {
 		if (theDate == null) {
 			if (other.theDate != null)
 				return false;
-		} else if (!theDate.equals(other.theDate))
+		} else if (!theDate.equals(other.theDate)){
+			System.out.println("failed: "+theDate+" "+other.theDate);
 			return false;
+		}
 		if (theInt != other.theInt)
 			return false;
 		if (theString == null) {

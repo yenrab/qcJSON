@@ -28,6 +28,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -163,7 +164,8 @@ public class JSONOutputStream extends JSONStream{
 		}
 
 		else if(aSerializableObject instanceof Date){
-			theWriter.write("\""+((Date)aSerializableObject).toString()+"\"");
+			Timestamp aStamp = new Timestamp(((Date)aSerializableObject).getTime());
+			theWriter.write("\""+aStamp.toString()+"\"");
 		}
 		else if(aSerializableObject instanceof Map){
 			Map aMap = (Map)aSerializableObject;
