@@ -41,6 +41,9 @@ import javax.crypto.CipherOutputStream;
  */
 public class JSONUtilities {
 
+	public static int version = 1;
+	public static int subversion = 5;
+	public static boolean isBeta = true;
 	/**
 	 * Encodings available for parsed and generated JSON Strings
 	 * @author Lee S. Barney
@@ -51,6 +54,10 @@ public class JSONUtilities {
 		UTF8
 	}
 	
+	
+	public static String getVersion(){
+		return "V "+version+"."+subversion+" "+ (JSONUtilities.isBeta ? "beta": "release");
+	}
 	/**
 	 * Converts a Serializable object into a JSON formatted string
 	 * @param aSerializableObject - the object to be JSONed.  This can be any Serializable Object except 
