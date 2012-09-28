@@ -172,17 +172,23 @@ public class JSONOutputStream extends JSONStream{
 			theWriter.write("{");
 			Set keys = aMap.keySet();
 			Iterator keyIt = keys.iterator();
+			int count = 0;
 			while(keyIt.hasNext()){
 				Object key = keyIt.next();
 				Object value = aMap.get(key);
+				if(value == null){
+					continue;
+				}
+				if(count != 0){
+					theWriter.write(",");
+				}
 				if(!(value instanceof Serializable)){
 					throw new JSONException("Unable to JSON non-serializable object ("+value+") of type "+value.getClass().toString()+".");
 				}
 				theWriter.write("\""+key.toString()+"\":");
 				writeObject(((Serializable)value), levelCount);
-				if(keyIt.hasNext()){
-					theWriter.write(",");
-				}
+				
+				count++;
 			}
 			theWriter.write("}");
 		}
@@ -192,6 +198,9 @@ public class JSONOutputStream extends JSONStream{
 			theWriter.write("[");
 			while(keyIt.hasNext()){
 				Object value = keyIt.next();
+				if(value == null){
+					value = "null";
+				}
 				if(!(value instanceof Serializable)){
 					throw new JSONException("Unable to JSON non-serializable object ("+value+") of type "+value.getClass().toString()+".");
 				}
@@ -204,7 +213,12 @@ public class JSONOutputStream extends JSONStream{
 			theWriter.write("]");
 		}
 		else if(aSerializableObject instanceof String){
-			theWriter.append("\""+escapeStringForJSON( ((String)aSerializableObject) )+"\"");
+			
+			String appendString = (String)aSerializableObject;
+			if(!appendString.equals("null")){
+				appendString = "\""+escapeStringForJSON( ((String)aSerializableObject) )+"\"";
+			}
+			theWriter.append(appendString);
 		}
 		else if(aSerializableObject instanceof Number){
 			theWriter.append(aSerializableObject.toString());
@@ -235,7 +249,10 @@ public class JSONOutputStream extends JSONStream{
 			Object[] theArray = (Object[])aSerializableObject;
 			for(int i = 0; i < theArray.length; i++){
 				Object anObject = theArray[i];
-				if(!(anObject instanceof Serializable)){
+				if(anObject == null){
+					anObject = "null";
+				}
+				else if(!(anObject instanceof Serializable)){
 					continue;
 				}
 				writeObject(((Serializable)anObject), levelCount);

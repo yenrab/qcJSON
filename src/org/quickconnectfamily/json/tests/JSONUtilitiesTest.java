@@ -17,6 +17,8 @@ import java.util.HashMap;
 import org.quickconnectfamily.json.JSONException;
 import org.quickconnectfamily.json.JSONUtilities;
 
+import android.util.SparseArray;
+
 public class JSONUtilitiesTest {
     
 	/*
@@ -26,24 +28,7 @@ public class JSONUtilitiesTest {
     
 	public static void testStringifySerializable() {
 		
-		/*
-		 * Testing a valid HashMap with Booleans
-		 */
-		
-		HashMap testMap = new HashMap();
-		Boolean first = new Boolean(true);
-		Boolean second = new Boolean(true);
-		testMap.put("config_App_6237", first);
-		testMap.put("Init_LoadResourceLastCacheDate", second);
 		String jsonString = null;
-		try {
-			jsonString = JSONUtilities.stringify(testMap);
-			Assert(jsonString.equals("{\"config_App_6237\":true,\"Init_LoadResourceLastCacheDate\":true}"));
-			//System.out.println("map: "+jsonString);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			return;
-		}
 		
 		/*
 		 * Testing a valid 'happy path' scenario
@@ -128,7 +113,7 @@ public class JSONUtilitiesTest {
 		}
 		
 		/*
-		 * Testing an array of ints.
+		 * Testing an array of doubles.
 		 */
 		
 		try {
@@ -157,7 +142,7 @@ public class JSONUtilitiesTest {
 		}
 
 		/*
-		 * Testing an array of bytes.
+		 * Testing an array of chars.
 		 */
 		
 		try {
@@ -171,23 +156,115 @@ public class JSONUtilitiesTest {
 			e.printStackTrace();
 			return;
 		}
+		
+		/*
+		 * Testing an array with nulls in it
+		 */
+		Object[] objArr = new Object[5];
+		objArr[0] = null;
+		objArr[1] = new Integer(7);
+		objArr[2] = new Double(8.3);
+		objArr[3] = null;
+		objArr[4] = null;
+		
+		try {
+			jsonString = JSONUtilities.stringify(objArr);
+			String testString = "[null,7,8.3,null,null]";
+			System.out.println(jsonString);
+			System.out.println(testString);
+			Assert(jsonString.equals(testString));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+		
 		System.out.println("Passed testStringifySerializable");
 	}
 	
 	
 	public static void testStringifyCollections(){
-		ArrayList test = new ArrayList();
-		test.add(9L);
-		test.add(8L);
-		test.add(7L);
+		Date testDate = new Date(1067899);
+		String jsonString = null;
+		
+		ArrayList testListHappyPath = new ArrayList();
+		testListHappyPath.add(9L);
+		testListHappyPath.add(8L);
+		testListHappyPath.add(7L);
 		try {
-			String testString = JSONUtilities.stringify(test);
-			Assert( testString.equals("[9,8,7]"));
+			jsonString = JSONUtilities.stringify(testListHappyPath);
+			Assert( jsonString.equals("[9,8,7]"));
 			//System.out.println("ArrayList: "+testString);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
 		}
+		/*
+		 * happy path map test
+		 */
+		HashMap testMapHappyPath = new HashMap();
+		testMapHappyPath.put("theDate", testDate);
+		testMapHappyPath.put("some string", "hello \"bob\" \t");
+		testMapHappyPath.put("someDouble", 87.3);
+		
+		try {
+			jsonString = JSONUtilities.stringify(testMapHappyPath);
+			String testString = "{\"someDouble\":87.3,\"some string\":\"hello \\\"bob\\\" \\t\",\"theDate\":\"1969-12-31 17:17:47.899\"}";
+			System.out.println(jsonString);
+			Assert(jsonString.equals(testString));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		
+		/*
+		 * Testing happy path HashMap with Booleans
+		 */
+		
+		HashMap testMap = new HashMap();
+		Boolean first = new Boolean(true);
+		Boolean second = new Boolean(true);
+		testMap.put("config_App_6237", first);
+		testMap.put("Init_LoadResourceLastCacheDate", second);
+		
+		try {
+			jsonString = JSONUtilities.stringify(testMap);
+			Assert(jsonString.equals("{\"config_App_6237\":true,\"Init_LoadResourceLastCacheDate\":true}"));
+			//System.out.println("map: "+jsonString);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			return;
+		}
+		
+		HashMap mapWithNullValue = new HashMap();
+		long bigNumber = Long.MAX_VALUE;
+		mapWithNullValue.put("real value", bigNumber);
+		mapWithNullValue.put("null value", null);
+		
+		try {
+			jsonString = JSONUtilities.stringify(mapWithNullValue);
+			System.out.println("null: "+jsonString);
+			Assert(jsonString.equals("{\"real value\":9223372036854775807}"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		ArrayList arrayWithNullValues = new ArrayList();
+		arrayWithNullValues.add(null);
+		arrayWithNullValues.add(17);
+		arrayWithNullValues.add(null);
+		arrayWithNullValues.add(null);
+		
+		try {
+			jsonString = JSONUtilities.stringify(arrayWithNullValues);
+			System.out.println(jsonString);
+			Assert(jsonString.equals("[null,17,null,null]"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		System.out.println("Passed testStringifyCollections");
 	}
     
@@ -574,7 +651,7 @@ public class JSONUtilitiesTest {
 			String jsonString = JSONUtilities.stringify(testMap);
 			Assert( jsonString != null);
 			Assert( jsonString.equals("{\"stringOne\":\"Some sort of string\",\"20\":\"some other stuff\",\"aNumber\":16.5,\"aTester\":{\"stringAtt\":\"hello\",\"listAtt\":[7,\"hello there from list\"],\"doubleAtt\":-4.5,\"doubleObjAtt\":1000.567789,\"parentString\":\"In The Parent\"}}"));
-		}
+		} 
 		catch(Exception e){
 			e.printStackTrace();
 			return;
