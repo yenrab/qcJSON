@@ -85,6 +85,20 @@ public class JSONUtilitiesTest {
 		}
 		
 		/*
+		 * Test a string with escaped quotes as an attribute
+		 */
+		String stringWithEscapes = "hello \"bob\". What do you want?";
+		TestObject anObjectWithEscapedString = new TestObject(stringWithEscapes, 7, new Date(1067899));
+		try {
+			jsonString = JSONUtilities.stringify(anObjectWithEscapedString);
+			System.out.println(jsonString);
+			Assert( jsonString.equals("{\"theDate\":\"1969-12-31 17:17:47.899\",\"theString\":\"hello \\\"bob\\\". What do you want?\",\"theInt\":7}"));
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			return;
+		}
+		
+		/*
 		 * Testing an array of Objects.
 		 */
 		

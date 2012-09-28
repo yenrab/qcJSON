@@ -204,7 +204,7 @@ public class JSONOutputStream extends JSONStream{
 			theWriter.write("]");
 		}
 		else if(aSerializableObject instanceof String){
-			theWriter.append("\""+((String)aSerializableObject)+"\"");
+			theWriter.append("\""+escapeStringForJSON( ((String)aSerializableObject) )+"\"");
 		}
 		else if(aSerializableObject instanceof Number){
 			theWriter.append(aSerializableObject.toString());
@@ -385,5 +385,15 @@ public class JSONOutputStream extends JSONStream{
 	 */
 	public void close() {
 		theWriter.close();
+	}
+	
+	private String escapeStringForJSON(String text) {
+		text = text.replaceAll("(\\r\\n?|\\n)", "\\\\n")
+			.replaceAll("([^\\\\]?)\\\"", "$1\\\\\"")
+			.replaceAll("(\\/)", "\\\\/")
+			.replaceAll("(\\f)", "\\\\f")
+			.replaceAll("(\\t)", "\\\\t")
+			.replaceAll("([^\\\\])\\\\([^\\\\ntfb\\/\\\"])", "$1\\\\\\\\$2");
+		return text;
 	}
 }
