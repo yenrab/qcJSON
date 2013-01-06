@@ -177,7 +177,7 @@ public class JSONOutputStream extends JSONStream{
 				Object key = keyIt.next();
 				Object value = aMap.get(key);
 				if(value == null){
-					continue;
+					value = "null";
 				}
 				if(count != 0){
 					theWriter.write(",");
