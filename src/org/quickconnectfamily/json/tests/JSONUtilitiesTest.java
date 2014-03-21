@@ -17,7 +17,7 @@ import java.util.HashMap;
 import org.quickconnectfamily.json.JSONException;
 import org.quickconnectfamily.json.JSONUtilities;
 
-import android.util.SparseArray;
+//import android.util.SparseArray;
 
 public class JSONUtilitiesTest {
     

@@ -128,7 +128,7 @@ public class JSONOutputStream extends JSONStream{
 		 * Android doesn't have awt.
 		 */
 		try{
-			 if(aSerializableObject == null || aSerializableObject.getClass() == Object.class){
+			 if(aSerializableObject == null || aSerializableObject.getClass().equals(Object.class)){
 				 return;
 			 }
 
@@ -150,7 +150,7 @@ public class JSONOutputStream extends JSONStream{
 		}
 		catch(Throwable t){
 			//do the Android specific check
-			 if(aSerializableObject == null || aSerializableObject.getClass() == Object.class){
+			 if(aSerializableObject == null || aSerializableObject.getClass().equals(Object.class)){
 					return;
 				}
 		}
