@@ -23,11 +23,11 @@
  */
 package org.quickconnectfamily.json;
 
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.Serializable;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Iterator;
@@ -35,8 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.crypto.Cipher;
-import javax.crypto.CipherOutputStream;
 /**
  * The JSONOutputStream class is used when you want to send an object as a JSON string to any type of OutputStream such
  * as a FileOutputStream or a SocketOutputStream.  If you want to generate a JSON string from an object
@@ -49,7 +47,7 @@ import javax.crypto.CipherOutputStream;
  * <ul>
  *  <li><b>Example 1 Object:</b>  An ArrayList with three values: a String "1", a String "hello", and a HashMap 
  *  as the third value in the ArrayList.  This HashMap has two key/value pairs: "name"/"fred" and "age"/"23".</li>
- *  
+ *
  *  <li><b>Example 1 JSON result:</b> ["1", "hello", {"name":"fred","age":"23"}]</li>
  *  </ul>
  * <br/>
@@ -57,7 +55,7 @@ import javax.crypto.CipherOutputStream;
  * <li><b>Example 2 Object:</b> A HashMap with three key/value pairs: "state"/"Idaho", "city"/"Rexburg", and
  *  "people"/ArrayList.  The ArrayList that is the value for the "people" key has two String values 
  *  "bob" and "sue".</li>
- *  
+ *
  * <li><b>Example 2 JSON result:</b> {"state":"Idaho", "city":"Rexburg", "people":["bob","sue"]}</li>
  * </ul>
  *  <br/>
@@ -69,26 +67,42 @@ import javax.crypto.CipherOutputStream;
  *  <h2>Restrictions</h2>
  *  The Java object from which the JSON string is being generated can not be a raw Object.  I can be anything that inherits from Object.
  *  The Java object from which the JSON string is being generated can not inherit from java.awt.container.
- *  
- * 
+ *
+ *
  * @author Lee S. Barney
  *
  */
 public class JSONOutputStream extends JSONStream{
-	private PrintWriter theWriter;
+	private BufferedWriter theWriter;
 	private int levelCountLimit;
 	//this is a hack work around since Android is returning true when a string is sent the isInstance("java.awt.Container") method call.
-	boolean isAndroid = false;
-	
+	private boolean isAndroid = false;
+	private HttpURLConnection theConnection;
+
+
+
+	public JSONOutputStream(HttpURLConnection aConnection) throws ProtocolException{
+		theConnection = aConnection;
+		theConnection.setRequestMethod("POST");
+		theConnection.setRequestProperty("Content-Type",
+				"application/x-www-form-urlencoded");
+
+		theConnection.setUseCaches(false);
+		theConnection.setRequestProperty("Content-Language", "en-US");
+
+		theConnection.setUseCaches(false);
+		theConnection.setDoInput(true);
+		theConnection.setDoOutput(true);
+	}
 	/**
-	 * 
+	 *
 	 * @param aStream - the stream to which the JSON is to be written
 	 */
 	public JSONOutputStream(OutputStream aStream){
 		if(aStream == null){
 			throw new NullPointerException();
 		}
-		theWriter = new PrintWriter(aStream);
+		theWriter = new BufferedWriter( new OutputStreamWriter(aStream));
 		levelCountLimit = 30;
 		//hack work around.  See message regarding isAndroid above.
 		try{
@@ -101,58 +115,60 @@ public class JSONOutputStream extends JSONStream{
 			isAndroid = true;
 		}
 	}
-	
+
 	/**
 	 * Writes a Serializable Object to the underlying stream as a JSON string
 	 * @param aSerializableObject - any Serializable object other than a raw Java Object and anything that inherits from java.awt.container
 	 * @throws JSONException
 	 */
-	
-	public void writeObject(Serializable aSerializableObject) throws JSONException{
-		if(theProtector != null){
+
+	public void writeObject(Serializable aSerializableObject) throws JSONException, IOException{
+		if(theProtector != null) {
 			try {
 				theProtector.claim();
 			} catch (InterruptedException e) {
 				throw new JSONException("Calling Thread interupted");
 			}
 		}
+
 		writeObject(aSerializableObject, 0);
+
 		if(theProtector != null){
 			theProtector.free();
 		}
 	}
 	@SuppressWarnings("rawtypes")
 
-	private void writeObject(Serializable aSerializableObject, int levelCount) throws JSONException{
+	private void writeObject(Serializable aSerializableObject, int levelCount) throws JSONException, IOException{
 		/*
 		 * Android doesn't have awt.
 		 */
 		try{
-			 if(aSerializableObject == null || aSerializableObject.getClass().equals(Object.class)){
-				 return;
-			 }
+			if(aSerializableObject == null || aSerializableObject.getClass().equals(Object.class)){
+				return;
+			}
 
-			 //The following line returns true when run in Android when it should not.  Don't use it.
-			 //else if(|| aSerializableObject.getClass().isInstance("java.awt.Container")){
+			//The following line returns true when run in Android when it should not.  Don't use it.
+			//else if(|| aSerializableObject.getClass().isInstance("java.awt.Container")){
 			 /*
 			  * run up the inheritance tree and see if it is a container.
 			  */
-			 Class aClass = aSerializableObject.getClass();
-			 if(!isAndroid){ 
-				 while((aClass = aClass.getSuperclass())  != null && !aClass.getName().equals("java.awt.Container")){
-					 //System.out.println("class Name: "+aClass.getName());
-				 }
-				 
-				 if(aClass != null && aClass.getName().equals("java.awt.Container")){
+			Class aClass = aSerializableObject.getClass();
+			if(!isAndroid){
+				while((aClass = aClass.getSuperclass())  != null && !aClass.getName().equals("java.awt.Container")){
+					//System.out.println("class Name: "+aClass.getName());
+				}
+
+				if(aClass != null && aClass.getName().equals("java.awt.Container")){
 					return;
 				}
-			 }
+			}
 		}
 		catch(Throwable t){
 			//do the Android specific check
-			 if(aSerializableObject == null || aSerializableObject.getClass().equals(Object.class)){
-					return;
-				}
+			if(aSerializableObject == null || aSerializableObject.getClass().equals(Object.class)){
+				return;
+			}
 		}
 		levelCount++;
 		if(levelCount > 30){
@@ -187,7 +203,7 @@ public class JSONOutputStream extends JSONStream{
 				}
 				theWriter.write("\""+key.toString()+"\":");
 				writeObject(((Serializable)value), levelCount);
-				
+
 				count++;
 			}
 			theWriter.write("}");
@@ -213,7 +229,7 @@ public class JSONOutputStream extends JSONStream{
 			theWriter.write("]");
 		}
 		else if(aSerializableObject instanceof String){
-			
+
 			String appendString = (String)aSerializableObject;
 			if(!appendString.equals("null")){
 				appendString = "\""+escapeStringForJSON( ((String)aSerializableObject) )+"\"";
@@ -350,41 +366,44 @@ public class JSONOutputStream extends JSONStream{
 				}
 				theWriter.append(']');
 			}
-			
+
 		}
 		else/*is instance of java.lang.Object*/{
 			theWriter.write('{');
 			writeAllAttributesOf(aSerializableObject, aSerializableObject.getClass(), levelCount);
 			theWriter.write('}');
 		}
+		//theWriter.newLine();
 		theWriter.flush();
 	}
-	
-	
-	private void writeAllAttributesOf(Serializable aSerializableObject, Class<?> aClass, int levelCount) throws JSONException{
+
+
+	private void writeAllAttributesOf(Serializable aSerializableObject, Class<?> aClass, int levelCount) throws JSONException, IOException{
 		//aClass may be the final child class or one of the parent classes
 		Field[] theFields = aClass.getDeclaredFields();
+		boolean previousFieldWasWritten = false;
 		try{
 			for(int i = 0; i < theFields.length; i++){
 				Field aField = theFields[i];
 				aField.setAccessible(true);
-				
+
 				String fieldName = aField.getName();
 				Object value = aField.get(aSerializableObject);
 				if(!(value instanceof Serializable)){
 					continue;
 				}
-				if( i != 0){
+				if( previousFieldWasWritten){
 					theWriter.write(",");
 				}
 				int modifiers = aField.getModifiers();
 				//ignore final attributes, attributes that are null, and any outer class references of inner classes
 				if(!Modifier.isFinal(modifiers) && value != null && !fieldName.equals("this$0")){
-					
+
 					theWriter.write("\""+fieldName+"\":");
 					writeObject(((Serializable)value), levelCount);
+					previousFieldWasWritten = true;
 				}
-				
+
 			}
 		}
 		catch(IllegalAccessException e){
@@ -400,17 +419,17 @@ public class JSONOutputStream extends JSONStream{
 	/**
 	 * Closes the output stream and the underlying stream
 	 */
-	public void close() {
+	public void close() throws IOException{
 		theWriter.close();
 	}
-	
+
 	private String escapeStringForJSON(String text) {
 		text = text.replaceAll("(\\r\\n?|\\n)", "\\\\n")
-			.replaceAll("([^\\\\]?)\\\"", "$1\\\\\"")
-			.replaceAll("(\\/)", "\\\\/")
-			.replaceAll("(\\f)", "\\\\f")
-			.replaceAll("(\\t)", "\\\\t")
-			.replaceAll("([^\\\\])\\\\([^\\\\ntfb\\/\\\"])", "$1\\\\\\\\$2");
+				.replaceAll("([^\\\\]?)\\\"", "$1\\\\\"")
+				.replaceAll("(\\/)", "\\\\/")
+				.replaceAll("(\\f)", "\\\\f")
+				.replaceAll("(\\t)", "\\\\t")
+				.replaceAll("([^\\\\])\\\\([^\\\\ntfb\\/\\\"])", "$1\\\\\\\\$2");
 		return text;
 	}
 }

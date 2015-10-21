@@ -23,14 +23,8 @@
  */
 package org.quickconnectfamily.json;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 
-import javax.crypto.Cipher;
-import javax.crypto.CipherInputStream;
-import javax.crypto.CipherOutputStream;
 /**
  * This class contains several utility methods for generating and parsing JSON strings.  
  * Care has been taken to make these match the JavaScript JSON API as much as possible.
@@ -72,7 +66,12 @@ public class JSONUtilities {
 		}
 		ByteArrayOutputStream theByteStream = new ByteArrayOutputStream();
 		JSONOutputStream theStream = new JSONOutputStream(theByteStream);
-		theStream.writeObject(aSerializableObject);
+		try {
+			theStream.writeObject(aSerializableObject);
+		}
+		catch (IOException e){
+			//do nohting since there will not be an IO Exception for a byte stream
+		}
 		return new String(theByteStream.toByteArray());
 	}
 	
@@ -94,7 +93,12 @@ public class JSONUtilities {
 		}
 		ByteArrayOutputStream theByteStream = new ByteArrayOutputStream();
 		JSONOutputStream theStream = new JSONOutputStream(theByteStream);
-		theStream.writeObject(aSerializableObject);
+		try {
+			theStream.writeObject(aSerializableObject);
+		}
+		catch (IOException e){
+			//do nothing since there will not be an IO exception when using a byte array stream
+		}
 		try {
 			return theByteStream.toString(theEncoding == encoding.UNICODE ? "ISO-8859-1" : "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -110,7 +114,7 @@ public class JSONUtilities {
 	 * @return either a HashMap or an ArrayList depending on the contents of the parameter string
 	 * @throws JSONException
 	 */
-	public static Object parse(String aJSONString) throws JSONException{
+	public static Object parse(String aJSONString) throws JSONException, ParseException{
 		if(aJSONString == null){
 			return null;
 		}
@@ -130,7 +134,7 @@ public class JSONUtilities {
 	 * @return either a HashMap or an ArrayList depending on the contents of the parameter string
 	 * @throws JSONException
 	 */
-	public static Object parse(String aJSONString, JSONUtilities.encoding theEncoding) throws JSONException{
+	public static Object parse(String aJSONString, JSONUtilities.encoding theEncoding) throws JSONException, ParseException{
 		if(aJSONString == null){
 			return null;
 		}

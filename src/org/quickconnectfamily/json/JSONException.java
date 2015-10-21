@@ -46,4 +46,10 @@ public class JSONException extends Exception {
 		// TODO Auto-generated constructor stub
 	}
 
+    public JSONException(String message, Throwable aThrowable){
+        super(message,aThrowable);
+    }
+
+
+
 }

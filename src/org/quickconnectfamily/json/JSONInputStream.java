@@ -27,8 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import javax.crypto.Cipher;
-import javax.crypto.CipherInputStream;
 /**
  * The JSONInputStream class is used when you want to read JSON from any type of InputStream such
  * as a FileInputStream or a SocketInputStream.  If you want to convert JSON string to the 
@@ -83,12 +81,12 @@ public class JSONInputStream extends JSONStream{
 	 * ArrayList if the JSON being read is an array.
 	 * @throws JSONException
 	 */
-	public Object readObject() throws JSONException{
+	public Object readObject() throws JSONException, ParseException{
 		if(theProtector != null){
 			try {
 				theProtector.claim();
 			} catch (InterruptedException e) {
-				throw new JSONException("Calling Thread interupted");
+				throw new JSONException("Calling Thread interupted", e);
 			}
 		}
 		try {
@@ -98,9 +96,7 @@ public class JSONInputStream extends JSONStream{
 			}
 			return parsedObject;
 		} catch (IOException e) {
-			throw new JSONException("unable to read JSON");
-		} catch (ParseException e) {
-			throw new JSONException("Invalid JSON String");
+			throw new JSONException("Unable to read JSON. ", e);
 		}
 	}
 	/**

@@ -11,7 +11,10 @@ public class TestObject implements Serializable {
 	private String theString;
 	private int theInt;
 	private Date theDate;
-	
+
+	public TestObject() {
+	}
+
 	public TestObject(String aString, int anInt, Date aDate) {
 		theString = aString;
 		theInt = anInt;
